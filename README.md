@@ -1,0 +1,1 @@
+# Minha configuração do nixos
