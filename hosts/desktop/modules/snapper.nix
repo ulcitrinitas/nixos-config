@@ -47,29 +47,29 @@
   };
 
   # Script pra rodar quando ocorre criação de novas gerações do sistema
-
   system.activationScripts.snapperSnapshot = {
-    supportsDryRun = true;
     text = ''
-      # Caminho para o binário do snapper
       SNAPPER="${pkgs.snapper}/bin/snapper"
 
-      # Verifica se o snapper está disponível e se a config 'root' existe
       if [ -x "$SNAPPER" ]; then
-        # Obtém o número da geração atual que está sendo ativada
-        # Lemos o link simbólico do perfil do sistema
-        GEN=$(readlink /nix/var/nix/profiles/system | grep -oP 'system-\K[0-9]+')
+        # Caminho da nova geração (que está sendo ativada agora)
+        NEW_GEN_PATH=$(readlink -f /nix/var/nix/profiles/system)
+        # Caminho da geração atual (que ainda está rodando)
+        OLD_GEN_PATH=$(readlink -f /run/current-system)
 
-        echo "Criando snapshot Snapper para a geração NixOS: $GEN..."
+        # Só cria o snapshot se os caminhos forem diferentes
+        if [ "$NEW_GEN_PATH" != "$OLD_GEN_PATH" ]; then
+          GEN_NUM=$(echo "$NEW_GEN_PATH" | grep -oP 'system-\K[0-9]+')
 
-        # Cria o snapshot
-        # --cleanup-algorithm number garante que ele siga sua política de retenção
-        $SNAPPER -c root create \
-          --description "NixOS Generation $GEN" \
-          --cleanup-algorithm number \
-          --userdata "nixos_gen=$GEN"
-      else
-        echo "Aviso: Snapper não encontrado ou não configurado. Pulando snapshot."
+          echo "NixOS: Detectada nova geração ($GEN_NUM). Criando snapshot Btrfs..."
+
+          $SNAPPER -c root create \
+            --description "NixOS Generation $GEN_NUM" \
+            --cleanup-algorithm number \
+            --userdata "nixos_gen=$GEN_NUM"
+        else
+          echo "NixOS: Nenhuma mudança de geração detectada. Pulando snapshot."
+        fi
       fi
     '';
   };
