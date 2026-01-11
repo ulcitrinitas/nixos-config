@@ -7,6 +7,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.0.0";
+
+      # Optional but recommended to limit the size of your system closure.
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     quickshell = {
       url = "github:outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,6 +32,7 @@
     self,
     nixpkgs,
     home-manager,
+    lanzaboote,
     quickshell,
     noctalia,
     nix-flatpak,
@@ -35,6 +43,7 @@
       specialArgs = {inherit inputs;};
       modules = [
         ./hosts/desktop/configuration.nix
+        lanzaboote.nixosModules.lanzaboote
         nix-flatpak.nixosModules.nix-flatpak
         home-manager.nixosModules.home-manager
         {
