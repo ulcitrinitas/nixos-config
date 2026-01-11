@@ -42,18 +42,26 @@
 
     # Enable "Silent boot"
     consoleLogLevel = 3;
-    initrd.verbose = false;
+    initrd = {
+      verbose = false;
+      initrd.systemd.enable = true;
+      boot.initrd.kernelModules = ["i915"];
+    };
+
     kernelParams = [
-      "quiet"
-      "splash"
-      "boot.shell_on_fail"
-      "udev.log_priority=3"
-      "rd.systemd.show_status=auto"
+      "quiet" #
+      "splash" #
+      "boot.shell_on_fail" #
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3" #
+      "vt.global_cursor_default=0"
     ];
     # Hide the OS choice for bootloaders.
     # It's still possible to open the bootloader list by pressing any key
     # It will just not appear on screen unless a key is pressed
-    loader.timeout = 0;
+    loader.timeout = 10;
   };
 
   zramSwap = {
