@@ -22,7 +22,7 @@
     loader.systemd-boot.enable = lib.mkForce false;
     loader.efi.canTouchEfiVariables = true;
 
-    boot.lanzaboote = {
+    lanzaboote = {
       enable = true;
       pkiBundle = "/var/lib/sbctl";
     };
