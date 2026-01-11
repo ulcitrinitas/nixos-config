@@ -45,7 +45,7 @@
     initrd = {
       verbose = false;
       initrd.systemd.enable = true;
-      boot.initrd.kernelModules = ["i915"];
+      initrd.kernelModules = ["i915"];
     };
 
     kernelParams = [
