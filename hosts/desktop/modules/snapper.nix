@@ -100,10 +100,12 @@
 
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "nixos-snapshots" ''
-      echo "ID | Data | Descrição | Metadados"
-      echo "---|------|-----------|----------"
+      echo "Mostrando todas as snapshots do sistema"
+      echo "root: "
       ${pkgs.snapper}/bin/snapper -c root list
+      echo "nix: "
       ${pkgs.snapper}/bin/snapper -c nix list
+      echo "home: "
       ${pkgs.snapper}/bin/snapper -c home list
     '')
   ];
