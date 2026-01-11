@@ -104,7 +104,7 @@
       echo "---|------|-----------|----------"
       ${pkgs.snapper}/bin/snapper -c root list
       ${pkgs.snapper}/bin/snapper -c nix list
-      ${pkgs.snapper}/bin/snapper -c home list"
+      ${pkgs.snapper}/bin/snapper -c home list
     '')
   ];
 }
