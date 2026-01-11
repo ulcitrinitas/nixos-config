@@ -48,22 +48,28 @@
 
   # Script pra rodar quando ocorre criação de novas gerações do sistema
 
-  system.activationScripts.snapper-post-switch = {
+  system.activationScripts.snapperSnapshot = {
     supportsDryRun = true;
     text = ''
+      # Caminho para o binário do snapper
+      SNAPPER="${pkgs.snapper}/bin/snapper"
+
       # Verifica se o snapper está disponível e se a config 'root' existe
-      if [ -e /run/current-system ] && ${pkgs.snapper}/bin/snapper -c root list > /dev/null 2>&1; then
-        echo "Criando snapshot para a nova geração..."
+      if [ -x "$SNAPPER" ]; then
+        # Obtém o número da geração atual que está sendo ativada
+        # Lemos o link simbólico do perfil do sistema
+        GEN=$(readlink /nix/var/nix/profiles/system | grep -oP 'system-\K[0-9]+')
 
-        # Obtém o número da geração atual para usar na descrição
-        GEN_NUM=$(readlink /nix/var/nix/profiles/system | cut -d- -f2)
+        echo "Criando snapshot Snapper para a geração NixOS: $GEN..."
 
-        ${pkgs.snapper}/bin/snapper -c root create \
-          --description "NixOS Generation $GEN_NUM" \
+        # Cria o snapshot
+        # --cleanup-algorithm number garante que ele siga sua política de retenção
+        $SNAPPER -c root create \
+          --description "NixOS Generation $GEN" \
           --cleanup-algorithm number \
-          --userdata "type=nixos-generation,gen=$GEN_NUM"
+          --userdata "nixos_gen=$GEN"
       else
-        echo "Snapper não configurado ou primeira instalação; pulando snapshot."
+        echo "Aviso: Snapper não encontrado ou não configurado. Pulando snapshot."
       fi
     '';
   };

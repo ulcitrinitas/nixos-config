@@ -44,8 +44,8 @@
     consoleLogLevel = 3;
     initrd = {
       verbose = false;
-      initrd.systemd.enable = true;
-      initrd.kernelModules = ["i915"];
+      systemd.enable = true;
+      kernelModules = ["i915"];
     };
 
     kernelParams = [
